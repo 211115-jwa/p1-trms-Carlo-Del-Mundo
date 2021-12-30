@@ -1,80 +1,72 @@
 create table department (
-	deptId serial primary key,
+	dept_id serial primary key,
 	dept_name varchar(50),
-	dept_head_Id integer 
-		references department(deptId)
+	dept_head_id integer 
+		references department(dept_id)
 );
 
-create table employee_role (
+create table user_role (
 	role_id serial primary key,
 	role_name varchar(50) not null
 );
 
 create table employee (
 	emp_id serial primary key,
-	firstName varchar(50) not null,
-	lastName varchar(50),
+	first_name varchar(50) not null,
+	last_name varchar(50),
 	username varchar(50) unique,
-	pwd varchar(50) not null,
+	passwd varchar(50) not null,
 	funds numeric,
-	supervisor integer
+	supervisor_id integer
 		references employee(emp_id),
-	employee_role integer not null
-		references employee_role(role_id),
-	department integer not null
-		references department(deptId)
+	role_id integer
+		references user_role(role_id),
+	dept_id integer
+		references department(dept_id)
 );
-
- create table employee_comments (
- 	comment_id serial primary key,
- 	comment_text varchar(500),
- 	sent_at timestamp,
- 	
- );
  
 create table event_type (
-	event_id serial primary key,
-	event_name varchar(50) not null,
-	percent_covered numeric
+	type_id serial primary key,
+	type_name varchar(50) not null,
+	percent_coverage numeric
 );
 
 create table grading_format (
 	format_id serial primary key,
 	format_name varchar(50) not null,
-	format_example varchar(500)
+	example varchar(50)
 );
 
 create table status (
 	status_id serial primary key,
 	status_name varchar(50),
-	approver_role integer
-		references employee_role(role_id)
+	approver varchar(50)
 );
 
 create table reimbursement (
-	reimbursement_id serial primary key,
-	employee integer
+	req_id serial primary key,
+	emp_id integer
 		references employee(emp_id),
 	local_date date,
 	local_time time,
-	site varchar(100),
+	location varchar(300),
 	description varchar(500),
-	cost_amount numeric,
-	grading_format integer
+	cost numeric,
+	grading_format_id integer
 		references grading_format(format_id),
-	event_type integer
-		references event_type(event_id),
-	status integer
+	event_type_id integer
+		references event_type(type_id),
+	status_id integer
 		references status(status_id),
-	local_date_time timestamptz
+	submitted_at timestamptz
 );
 
-create table emp_comments (
+create table comment (
 	comment_id serial primary key,
-	reimbursement integer
-		references reimbursement(reimbursement_id),
-	employee integer
+	req_id integer
+		references reimbursement(req_id),
+	approver_id integer
 		references employee(emp_id),
 	comment_text varchar(500),
-	local_date_time timestamptz
+	sent_at timestamptz
 );

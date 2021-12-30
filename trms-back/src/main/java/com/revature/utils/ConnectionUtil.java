@@ -58,7 +58,7 @@ public class ConnectionUtil {
 			conn = DriverManager.getConnection(
 					databaseProps.getProperty("url"),
 					databaseProps.getProperty("usr"),
-					databaseProps.getProperty("psw"));
+					databaseProps.getProperty("pwd"));
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
