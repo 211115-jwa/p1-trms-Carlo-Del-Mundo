@@ -24,7 +24,11 @@ create table employee (
 	dept_id integer
 		references department(dept_id)
 );
- 
+
+alter table department
+	drop constraint department_dept_head_id_fkey,
+	add foreign key (dept_head_id) references employee(emp_id);
+
 create table event_type (
 	type_id serial primary key,
 	type_name varchar(50) not null,
