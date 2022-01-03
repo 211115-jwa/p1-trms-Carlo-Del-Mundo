@@ -17,7 +17,7 @@ public class StatusPostgres implements StatusDAO {
 
 	@Override
 	public Status getById(int id) {
-		Status status = new Status();
+		Status status = null;												//Changed status object to null By: Carlo 
 		try (Connection conn = connUtil.getConnection()) {
 			String sql = "select * from status where status_id=?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);

@@ -1,6 +1,10 @@
 package com.revature.beans;
 
+import java.sql.ResultSet;
 import java.util.Objects;
+
+import com.revature.data.EmployeeDAO;
+import com.revature.utils.DAOFactory;
 
 public class Employee {
 	private int empId;
@@ -10,7 +14,8 @@ public class Employee {
 	private String password;
 	private Role role;
 	private double funds;
-	private Employee supervisor;
+	private int supervisor_id;				// setter only
+	private Employee supervisor;			//getter only
 	private Department department;
 	
 	public Employee() {
@@ -19,11 +24,15 @@ public class Employee {
 		lastName="Last";
 		username="";
 		password="";
-		role = new Role();
+//		role = new Role();
+		role = null;
 		funds = 1000.00;
-		supervisor = new Employee();
-		department = new Department();
+//		supervisor = new Employee();
+		supervisor = null;
+//		department = new Department();
+		department = null;
 	}
+	
 
 	public int getEmpId() {
 		return empId;
@@ -84,11 +93,13 @@ public class Employee {
 	}
 
 	public Employee getSupervisor() {
-		return supervisor;
+		EmployeeDAO empDao = DAOFactory.getEmployeeDAO();
+		
+		return empDao.getById(this.supervisor_id);
 	}
 
-	public void setSupervisor(Employee supervisor) {
-		this.supervisor = supervisor;
+	public void setSupervisorId(int supervisorId) {
+		this.supervisor_id = supervisorId;
 	}
 
 	public Department getDepartment() {

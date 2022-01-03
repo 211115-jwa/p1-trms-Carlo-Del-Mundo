@@ -8,13 +8,19 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.revature.beans.Department;
 import com.revature.beans.Employee;
 import com.revature.beans.Role;
+import com.revature.data.DepartmentDAO;
 import com.revature.data.EmployeeDAO;
+import com.revature.data.RoleDAO;
 import com.revature.utils.ConnectionUtil;
+import com.revature.utils.DAOFactory;
 
 public class EmployeePostgres implements EmployeeDAO {
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
+	private RoleDAO roleDao = DAOFactory.getRoleDAO();							// to get Role bean 		by Carlo
+	private DepartmentDAO deptDao = DAOFactory.getDepartmentDAO();				// to get Department bean 	by Carlo
 
 	@Override
 	public int create(Employee dataToAdd) {
@@ -87,12 +93,16 @@ public class EmployeePostgres implements EmployeeDAO {
 				emp.setUsername(resultSet.getString("username"));
 				emp.setPassword(resultSet.getString("passwd"));
 				emp.setFunds(resultSet.getDouble("funds"));
-				Role role = new Role();
-				role.setRoleId(resultSet.getInt("role_id"));
-				role.setName(resultSet.getString("role_name"));
-				emp.setRole(role);
-				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
-				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
+//				Role role = new Role();
+//				role.setRoleId(resultSet.getInt("role_id"));
+//				role.setName(resultSet.getString("role_name"));
+				emp.setRole(roleDao.getByID(resultSet.getInt("role_id")));			//getting role object by ID
+//				emp.setSupervisor(new Employee());									
+//				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
+				emp.setSupervisorId(resultSet.getInt("supervisor_id"));				// sets the supervisor_id 
+				emp.setDepartment(deptDao.getById(resultSet.getInt("dept_id")));	//getting department object by ID
+//				emp.setDepartment(new Department());
+//				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
 			}
 		
 		} catch (SQLException e) {
@@ -130,12 +140,17 @@ public class EmployeePostgres implements EmployeeDAO {
 				emp.setUsername(resultSet.getString("username"));
 				emp.setPassword(resultSet.getString("passwd"));
 				emp.setFunds(resultSet.getDouble("funds"));
-				Role role = new Role();
-				role.setRoleId(resultSet.getInt("role_id"));
-				role.setName(resultSet.getString("role_name"));
-				emp.setRole(role);
-				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
-				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
+//				Role role = new Role();
+//				role.setRoleId(resultSet.getInt("role_id"));
+//				role.setName(resultSet.getString("role_name"));
+//				emp.setRole(role);
+				emp.setRole(roleDao.getByID(resultSet.getInt("role_id")));
+//				emp.setSupervisor(new Employee());
+//				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
+				emp.setSupervisorId(resultSet.getInt("supervisor_id"));				
+				emp.setDepartment(deptDao.getById(resultSet.getInt("dept_id")));	
+//				emp.setDepartment(new Department());
+//				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
 				
 				emps.add(emp);
 			}
@@ -148,7 +163,8 @@ public class EmployeePostgres implements EmployeeDAO {
 	}
 
 	@Override
-	public void update(Employee dataToUpdate) {
+	public boolean update(Employee dataToUpdate) {
+		boolean isUpdated = false;
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
 			String sql="update employee set "
@@ -175,17 +191,22 @@ public class EmployeePostgres implements EmployeeDAO {
 			int rowsAffected = pStmt.executeUpdate();
 			if (rowsAffected<=1) {
 				conn.commit();
+				isUpdated = true;
 			} else {
 				conn.rollback();
+				isUpdated = false;
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			isUpdated = false;
 		}
+		return isUpdated;
 	}
 
 	@Override
-	public void delete(Employee dataToDelete) {
+	public boolean delete(Employee dataToDelete) {
+		 boolean isDeleted = false;
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
 			String sql="delete from employee"
@@ -196,13 +217,17 @@ public class EmployeePostgres implements EmployeeDAO {
 			int rowsAffected = pStmt.executeUpdate();
 			if (rowsAffected<=1) {
 				conn.commit();
+				isDeleted = true;
 			} else {
 				conn.rollback();
+				isDeleted = false;
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			isDeleted = false;
 		}
+		return isDeleted;
 	}
 
 	@Override
@@ -222,6 +247,8 @@ public class EmployeePostgres implements EmployeeDAO {
 					+ " dept_id"
 					+ " from employee join user_role on employee.role_id=user_role.role_id"
 					+ " where username=?";
+			
+			
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, username);
 			
@@ -235,12 +262,17 @@ public class EmployeePostgres implements EmployeeDAO {
 				emp.setUsername(resultSet.getString("username"));
 				emp.setPassword(resultSet.getString("passwd"));
 				emp.setFunds(resultSet.getDouble("funds"));
-				Role role = new Role();
-				role.setRoleId(resultSet.getInt("role_id"));
-				role.setName(resultSet.getString("role_name"));
-				emp.setRole(role);
-				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
-				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
+//				Role role = new Role();
+//				role.setRoleId(resultSet.getInt("role_id"));
+//				role.setName(resultSet.getString("role_name"));
+//				emp.setRole(role);
+				emp.setRole(roleDao.getByID(resultSet.getInt("role_id")));
+//				emp.setSupervisor(new Employee());
+//				emp.getSupervisor().setEmpId(resultSet.getInt("supervisor_id"));
+				emp.setSupervisorId(resultSet.getInt("supervisor_id"));				
+				emp.setDepartment(deptDao.getById(resultSet.getInt("dept_id")));	
+//				emp.setDepartment(new Department());
+//				emp.getDepartment().setDeptId(resultSet.getInt("dept_id"));
 			}
 		
 		} catch (SQLException e) {

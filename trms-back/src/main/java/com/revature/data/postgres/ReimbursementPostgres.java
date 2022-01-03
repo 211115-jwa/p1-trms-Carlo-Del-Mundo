@@ -16,11 +16,18 @@ import com.revature.beans.EventType;
 import com.revature.beans.GradingFormat;
 import com.revature.beans.Reimbursement;
 import com.revature.beans.Status;
+import com.revature.data.EventTypeDAO;
+import com.revature.data.GradingFormatDAO;
 import com.revature.data.ReimbursementDAO;
+import com.revature.data.StatusDAO;
 import com.revature.utils.ConnectionUtil;
+import com.revature.utils.DAOFactory;
 
 public class ReimbursementPostgres implements ReimbursementDAO {
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
+	private GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
+	private EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
+	private StatusDAO statusDao = DAOFactory.getStatusDAO();
 
 	@Override
 	public int create(Reimbursement dataToAdd) {
@@ -107,21 +114,24 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
-				GradingFormat gf = new GradingFormat();
-				gf.setFormatId(resultSet.getInt("grading_format_id"));
-				gf.setName(resultSet.getString("format_name"));
-				gf.setExample(resultSet.getString("format_example"));
-				request.setGradingFormat(gf);
-				EventType et = new EventType();
-				et.setEventId(resultSet.getInt("event_type_id"));
-				et.setName(resultSet.getString("type_name"));
-				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
-				request.setEventType(et);
-				Status s = new Status();
-				s.setStatusId(resultSet.getInt("status_id"));
-				s.setName(resultSet.getString("status_name"));
-				s.setApprover(resultSet.getString("approver"));
-				request.setStatus(s);
+				request.setGradingFormat(gradingFormatDao.getById(resultSet.getInt("grading_format_id")));
+//				GradingFormat gf = new GradingFormat();
+//				gf.setFormatId(resultSet.getInt("grading_format_id"));
+//				gf.setName(resultSet.getString("format_name"));
+//				gf.setExample(resultSet.getString("format_example"));
+//				request.setGradingFormat(gf);
+				request.setEventType(eventTypeDao.getById(resultSet.getInt("event_type_id")));
+//				EventType et = new EventType();
+//				et.setEventId(resultSet.getInt("event_type_id"));
+//				et.setName(resultSet.getString("type_name"));
+//				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
+//				request.setEventType(et);
+				request.setStatus(statusDao.getById(resultSet.getInt("status_id")));
+//				Status s = new Status();
+//				s.setStatusId(resultSet.getInt("status_id"));
+//				s.setName(resultSet.getString("status_name"));
+//				s.setApprover(resultSet.getString("approver"));
+//				request.setStatus(s);
 				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 			}
 		} catch (SQLException e) {
@@ -168,21 +178,21 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
-				GradingFormat gf = new GradingFormat();
-				gf.setFormatId(resultSet.getInt("grading_format_id"));
-				gf.setName(resultSet.getString("format_name"));
-				gf.setExample(resultSet.getString("format_example"));
-				request.setGradingFormat(gf);
-				EventType et = new EventType();
-				et.setEventId(resultSet.getInt("event_type_id"));
-				et.setName(resultSet.getString("type_name"));
-				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
-				request.setEventType(et);
-				Status s = new Status();
-				s.setStatusId(resultSet.getInt("status_id"));
-				s.setName(resultSet.getString("status_name"));
-				s.setApprover(resultSet.getString("approver"));
-				request.setStatus(s);
+//				GradingFormat gf = new GradingFormat();
+//				gf.setFormatId(resultSet.getInt("grading_format_id"));
+//				gf.setName(resultSet.getString("format_name"));
+//				gf.setExample(resultSet.getString("format_example"));
+				request.setGradingFormat(gradingFormatDao.getById(resultSet.getInt("grading_format_id")));
+//				EventType et = new EventType();
+//				et.setEventId(resultSet.getInt("event_type_id"));
+//				et.setName(resultSet.getString("type_name"));
+//				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
+				request.setEventType(eventTypeDao.getById(resultSet.getInt("event_type_id")));
+//				Status s = new Status();
+//				s.setStatusId(resultSet.getInt("status_id"));
+//				s.setName(resultSet.getString("status_name"));
+//				s.setApprover(resultSet.getString("approver"));
+				request.setStatus(statusDao.getById(resultSet.getInt("status_id")));
 				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);
@@ -194,7 +204,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 	}
 
 	@Override
-	public void update(Reimbursement dataToUpdate) {
+	public boolean update(Reimbursement dataToUpdate) {
+		boolean isUpdated = false;
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
 			String sql="update reimbursement set"
@@ -225,17 +236,21 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			int rowsAffected = pStmt.executeUpdate();
 			if (rowsAffected <= 1) {
 				conn.commit();
+				isUpdated = true;
 			} else {
 				conn.rollback();
+				isUpdated = false;
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return isUpdated;
 	}
 
 	@Override
-	public void delete(Reimbursement dataToDelete) {
+	public boolean delete(Reimbursement dataToDelete) {
+		boolean isDeleted = false;
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
 			String sql="delete from reimbursement"
@@ -246,13 +261,16 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			int rowsAffected = pStmt.executeUpdate();
 			if (rowsAffected <= 1) {
 				conn.commit();
+				isDeleted = true;
 			} else {
 				conn.rollback();
+				isDeleted = false;
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return isDeleted;
 	}
 
 	@Override

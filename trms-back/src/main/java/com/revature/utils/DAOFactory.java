@@ -6,6 +6,7 @@ import com.revature.data.EmployeeDAO;
 import com.revature.data.EventTypeDAO;
 import com.revature.data.GradingFormatDAO;
 import com.revature.data.ReimbursementDAO;
+import com.revature.data.RoleDAO;
 import com.revature.data.StatusDAO;
 import com.revature.data.postgres.CommentPostgres;
 import com.revature.data.postgres.DepartmentPostgres;
@@ -13,6 +14,7 @@ import com.revature.data.postgres.EmployeePostgres;
 import com.revature.data.postgres.EventTypePostgres;
 import com.revature.data.postgres.GradingFormatPostgres;
 import com.revature.data.postgres.ReimbursementPostgres;
+import com.revature.data.postgres.RolePostgres;
 import com.revature.data.postgres.StatusPostgres;
 
 /**
@@ -36,4 +38,5 @@ public class DAOFactory {
 	public static GradingFormatDAO getGradingFormatDAO() { return new GradingFormatPostgres(); }
 	public static ReimbursementDAO getReimbursementDAO() { return new ReimbursementPostgres(); }
 	public static StatusDAO getStatusDAO() { return new StatusPostgres(); }
+	public static RoleDAO getRoleDAO() { return new RolePostgres(); }
 }

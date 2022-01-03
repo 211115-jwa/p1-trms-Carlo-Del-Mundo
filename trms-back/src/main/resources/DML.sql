@@ -51,3 +51,7 @@ insert into employee (emp_id, first_name, last_name, username, passwd, funds, su
 update employee 
 	set supervisor_id = 1
 	where emp_id = 2;
+
+
+insert into reimbursement (req_id, emp_id, local_date, local_time, "location", description, "cost", grading_format_id, event_type_id, status_id, submitted_at)
+	values (default, 5, '2022-01-02', '11:25:35', 'Home', 'Office Supplies', 1234.56, 3, 4, 4, current_timestamp);
