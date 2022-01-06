@@ -19,20 +19,30 @@ public class Employee {
 	private Department department;
 	
 	public Employee() {
-		empId=0;
-		firstName="First";
-		lastName="Last";
-		username="";
-		password="";
-//		role = new Role();
-		role = null;
-		funds = 1000.00;
-//		supervisor = new Employee();
-		supervisor = null;
-//		department = new Department();
-		department = null;
+		this(0,	"First", 
+				"Last",
+				"username",
+				"password",
+				null,
+				1000.00,
+				2,
+				null);
 	}
 	
+	public Employee(int empId, String firstName, String lastName, String username, String password, Role role, Double funds, int supervisor_id, Department department) {
+		this.empId = empId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+//		role = new Role();
+		this.role = role;
+		this.funds = funds;
+//		supervisor = new Employee();
+		this.supervisor_id = supervisor_id;
+//		department = new Department();
+		this.department = department;
+	}
 
 	public int getEmpId() {
 		return empId;

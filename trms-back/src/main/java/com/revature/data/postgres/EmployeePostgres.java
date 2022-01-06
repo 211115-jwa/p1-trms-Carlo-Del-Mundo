@@ -19,8 +19,6 @@ import com.revature.utils.DAOFactory;
 
 public class EmployeePostgres implements EmployeeDAO {
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
-	private RoleDAO roleDao = DAOFactory.getRoleDAO();							// to get Role bean 		by Carlo
-	private DepartmentDAO deptDao = DAOFactory.getDepartmentDAO();				// to get Department bean 	by Carlo
 
 	@Override
 	public int create(Employee dataToAdd) {
@@ -65,6 +63,8 @@ public class EmployeePostgres implements EmployeeDAO {
 
 	@Override
 	public Employee getById(int id) {
+		RoleDAO roleDao = DAOFactory.getRoleDAO();							// to get Role bean 		by Carlo
+		DepartmentDAO deptDao = DAOFactory.getDepartmentDAO();				// to get Department bean 	by Carlo
 		Employee emp = null;
 		
 		try (Connection conn = connUtil.getConnection()) {
@@ -114,6 +114,8 @@ public class EmployeePostgres implements EmployeeDAO {
 
 	@Override
 	public Set<Employee> getAll() {
+		RoleDAO roleDao = DAOFactory.getRoleDAO();							// to get Role bean 		by Carlo
+		DepartmentDAO deptDao = DAOFactory.getDepartmentDAO();				// to get Department bean 	by Carlo
 		Set<Employee> emps = new HashSet<>();
 		
 		try (Connection conn = connUtil.getConnection()) {
@@ -232,6 +234,8 @@ public class EmployeePostgres implements EmployeeDAO {
 
 	@Override
 	public Employee getByUsername(String username) {
+		RoleDAO roleDao = DAOFactory.getRoleDAO();							// to get Role bean 		by Carlo
+		DepartmentDAO deptDao = DAOFactory.getDepartmentDAO();				// to get Department bean 	by Carlo
 		Employee emp = null;
 		
 		try (Connection conn = connUtil.getConnection()) {

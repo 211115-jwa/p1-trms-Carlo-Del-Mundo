@@ -37,7 +37,7 @@ public interface RequestReviewService {
 	 * 
 	 * @param request the request to be approved
 	 */
-	public void approveRequest(Reimbursement request);
+	public boolean approveRequest(Reimbursement request);
 	
 	/**
 	 * Sets the status of the specified request to "Rejected", then
@@ -45,7 +45,7 @@ public interface RequestReviewService {
 	 * 
 	 * @param request the request to be rejected
 	 */
-	public void rejectRequest(Reimbursement request);
+	public boolean rejectRequest(Reimbursement request);
 	
 	/**
 	 * Sets the status of the specified request to "Rejected", then
@@ -56,5 +56,5 @@ public interface RequestReviewService {
 	 * 
 	 * @param request the request to be rejected
 	 */
-	public void rejectRequest(Reimbursement request, Comment comment);
+	public boolean rejectRequest(Reimbursement request, Comment comment);
 }

@@ -16,6 +16,7 @@ import com.revature.beans.EventType;
 import com.revature.beans.GradingFormat;
 import com.revature.beans.Reimbursement;
 import com.revature.beans.Status;
+import com.revature.data.EmployeeDAO;
 import com.revature.data.EventTypeDAO;
 import com.revature.data.GradingFormatDAO;
 import com.revature.data.ReimbursementDAO;
@@ -25,9 +26,6 @@ import com.revature.utils.DAOFactory;
 
 public class ReimbursementPostgres implements ReimbursementDAO {
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
-	private GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
-	private EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
-	private StatusDAO statusDao = DAOFactory.getStatusDAO();
 
 	@Override
 	public int create(Reimbursement dataToAdd) {
@@ -76,6 +74,11 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 
 	@Override
 	public Reimbursement getById(int id) {
+		EmployeeDAO empDao = DAOFactory.getEmployeeDAO();
+		GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
+		EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
+		StatusDAO statusDao = DAOFactory.getStatusDAO();
+		
 		Reimbursement request = null;
 		try (Connection conn = connUtil.getConnection()) {
 			String sql="select" + 
@@ -108,7 +111,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			while (resultSet.next()) {
 				request = new Reimbursement();
 				request.setReqId(resultSet.getInt("req_id"));
-				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
+				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
+//				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
 				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
 				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
@@ -142,7 +146,12 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 
 	@Override
 	public Set<Reimbursement> getAll() {
+		EmployeeDAO empDao = DAOFactory.getEmployeeDAO();
+		GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
+		EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
+		StatusDAO statusDao = DAOFactory.getStatusDAO();
 		Set<Reimbursement> requests = new HashSet<>();
+		
 		try (Connection conn = connUtil.getConnection()) {
 			String sql="select" + 
 					" req_id," + 
@@ -172,7 +181,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			while (resultSet.next()) {
 				Reimbursement request = new Reimbursement();
 				request.setReqId(resultSet.getInt("req_id"));
-				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
+				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
+//				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
 				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
 				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
@@ -231,7 +241,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			pStmt.setInt(8, dataToUpdate.getEventType().getEventId());
 			pStmt.setInt(9, dataToUpdate.getStatus().getStatusId());
 			pStmt.setTimestamp(10, Timestamp.valueOf(dataToUpdate.getSubmittedAt()));
-			pStmt.setInt(10, dataToUpdate.getReqId());
+			pStmt.setInt(11, dataToUpdate.getReqId());
 			
 			int rowsAffected = pStmt.executeUpdate();
 			if (rowsAffected <= 1) {
@@ -275,7 +285,12 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 
 	@Override
 	public Set<Reimbursement> getByRequestor(Employee requestor) {
+		EmployeeDAO empDao = DAOFactory.getEmployeeDAO();
+		GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
+		EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
+		StatusDAO statusDao = DAOFactory.getStatusDAO();
 		Set<Reimbursement> requests = new HashSet<>();
+		
 		try (Connection conn = connUtil.getConnection()) {
 			String sql="select" + 
 					" req_id," + 
@@ -307,27 +322,31 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			while (resultSet.next()) {
 				Reimbursement request = new Reimbursement();
 				request.setReqId(resultSet.getInt("req_id"));
-				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
+				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
+//				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
 				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
 				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
-				GradingFormat gf = new GradingFormat();
-				gf.setFormatId(resultSet.getInt("grading_format_id"));
-				gf.setName(resultSet.getString("format_name"));
-				gf.setExample(resultSet.getString("format_example"));
-				request.setGradingFormat(gf);
-				EventType et = new EventType();
-				et.setEventId(resultSet.getInt("event_type_id"));
-				et.setName(resultSet.getString("type_name"));
-				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
-				request.setEventType(et);
-				Status s = new Status();
-				s.setStatusId(resultSet.getInt("status_id"));
-				s.setName(resultSet.getString("status_name"));
-				s.setApprover(resultSet.getString("approver"));
-				request.setStatus(s);
+				request.setGradingFormat(gradingFormatDao.getById(resultSet.getInt("grading_format_id")));
+//				GradingFormat gf = new GradingFormat();
+//				gf.setFormatId(resultSet.getInt("grading_format_id"));
+//				gf.setName(resultSet.getString("format_name"));
+//				gf.setExample(resultSet.getString("format_example"));
+//				request.setGradingFormat(gf);
+				request.setEventType(eventTypeDao.getById(resultSet.getInt("event_type_id")));
+//				EventType et = new EventType();
+//				et.setEventId(resultSet.getInt("event_type_id"));
+//				et.setName(resultSet.getString("type_name"));
+//				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
+//				request.setEventType(et);
+				request.setStatus(statusDao.getById(resultSet.getInt("status_id")));
+//				Status s = new Status();
+//				s.setStatusId(resultSet.getInt("status_id"));
+//				s.setName(resultSet.getString("status_name"));
+//				s.setApprover(resultSet.getString("approver"));
+//				request.setStatus(s);
 				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);
@@ -340,7 +359,12 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 
 	@Override
 	public Set<Reimbursement> getByStatus(Status status) {
+		EmployeeDAO empDao = DAOFactory.getEmployeeDAO();
+		GradingFormatDAO gradingFormatDao = DAOFactory.getGradingFormatDAO();
+		EventTypeDAO eventTypeDao = DAOFactory.getEventTypeDAO();
+		StatusDAO statusDao = DAOFactory.getStatusDAO();
 		Set<Reimbursement> requests = new HashSet<>();
+		
 		try (Connection conn = connUtil.getConnection()) {
 			String sql="select" + 
 					" req_id," + 
@@ -372,27 +396,31 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 			while (resultSet.next()) {
 				Reimbursement request = new Reimbursement();
 				request.setReqId(resultSet.getInt("req_id"));
-				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
+				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
+//				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
 				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
 				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
-				GradingFormat gf = new GradingFormat();
-				gf.setFormatId(resultSet.getInt("grading_format_id"));
-				gf.setName(resultSet.getString("format_name"));
-				gf.setExample(resultSet.getString("format_example"));
-				request.setGradingFormat(gf);
-				EventType et = new EventType();
-				et.setEventId(resultSet.getInt("event_type_id"));
-				et.setName(resultSet.getString("type_name"));
-				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
-				request.setEventType(et);
-				Status s = new Status();
-				s.setStatusId(resultSet.getInt("status_id"));
-				s.setName(resultSet.getString("status_name"));
-				s.setApprover(resultSet.getString("approver"));
-				request.setStatus(s);
+				request.setGradingFormat(gradingFormatDao.getById(resultSet.getInt("grading_format_id")));
+//				GradingFormat gf = new GradingFormat();
+//				gf.setFormatId(resultSet.getInt("grading_format_id"));
+//				gf.setName(resultSet.getString("format_name"));
+//				gf.setExample(resultSet.getString("format_example"));
+//				request.setGradingFormat(gf);
+				request.setEventType(eventTypeDao.getById(resultSet.getInt("event_type_id")));
+//				EventType et = new EventType();
+//				et.setEventId(resultSet.getInt("event_type_id"));
+//				et.setName(resultSet.getString("type_name"));
+//				et.setPercentCovered(resultSet.getDouble("percent_coverage"));
+//				request.setEventType(et);
+				request.setStatus(statusDao.getById(resultSet.getInt("status_id")));
+//				Status s = new Status();
+//				s.setStatusId(resultSet.getInt("status_id"));
+//				s.setName(resultSet.getString("status_name"));
+//				s.setApprover(resultSet.getString("approver"));
+//				request.setStatus(s);
 				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);

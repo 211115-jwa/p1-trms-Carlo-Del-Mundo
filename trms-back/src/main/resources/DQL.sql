@@ -16,3 +16,5 @@ select * from event_type;
 select * from status;
 
 select * from reimbursement;
+
+select * from "comment";

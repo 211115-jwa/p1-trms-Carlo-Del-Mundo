@@ -29,7 +29,7 @@ public class EventTypePostgres implements EventTypeDAO {
 				eventType = new EventType();
 				eventType.setEventId(id);
 				eventType.setName(resultSet.getString("type_name"));
-				eventType.setPercentCovered(resultSet.getDouble("percent_covered"));
+				eventType.setPercentCovered(resultSet.getDouble("percent_coverage"));
 			}
 		
 		} catch (SQLException e) {
@@ -51,7 +51,7 @@ public class EventTypePostgres implements EventTypeDAO {
 				EventType eventType = new EventType();
 				eventType.setEventId(resultSet.getInt("type_id"));
 				eventType.setName(resultSet.getString("type_name"));
-				eventType.setPercentCovered(resultSet.getDouble("percent_covered"));
+				eventType.setPercentCovered(resultSet.getDouble("percent_coverage"));
 				
 				eventTypes.add(eventType);
 			}
@@ -76,7 +76,7 @@ public class EventTypePostgres implements EventTypeDAO {
 				EventType eventType = new EventType();
 				eventType.setEventId(resultSet.getInt("type_id"));
 				eventType.setName(resultSet.getString("type_name"));
-				eventType.setPercentCovered(resultSet.getDouble("percent_covered"));
+				eventType.setPercentCovered(resultSet.getDouble("percent_coverage"));
 				
 				eventTypes.add(eventType);
 			}

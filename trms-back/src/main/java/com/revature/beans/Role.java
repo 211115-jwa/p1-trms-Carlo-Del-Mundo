@@ -10,6 +10,11 @@ public class Role {
 		roleId = 1;
 		name="Employee";
 	}
+	
+	public Role(int roleId, String name) {
+		this.roleId = roleId;
+		this.name = name;
+	}
 
 	public int getRoleId() {
 		return roleId;

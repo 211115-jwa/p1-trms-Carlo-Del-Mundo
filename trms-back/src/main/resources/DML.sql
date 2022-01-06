@@ -6,7 +6,7 @@ insert into user_role (role_id, role_name)
 insert into status (status_id, status_name, approver)
 	values (default, 'Pending Approval', 'Direct Supervisor'),
 			(default, 'Approved', 'Manager'),
-			(default, 'Denied', 'Employee'),
+			(default, 'Rejected', 'Manager'),
 			(default, 'Requesting', 'Employee');
 			
 insert into grading_format (format_id, format_name, example)
@@ -54,4 +54,9 @@ update employee
 
 
 insert into reimbursement (req_id, emp_id, local_date, local_time, "location", description, "cost", grading_format_id, event_type_id, status_id, submitted_at)
-	values (default, 5, '2022-01-02', '11:25:35', 'Home', 'Office Supplies', 1234.56, 3, 4, 4, current_timestamp);
+	values (default, 5, '2022-01-02', '11:25:35', 'Home', 'Office Supplies', 1234.56, 3, 4, 1, current_timestamp);
+	
+
+insert into "comment" (comment_id, req_id, approver_id, comment_text, sent_at)
+	values (default, 1, 2, 'test comment', current_timestamp);
+	

@@ -17,6 +17,14 @@ public class Comment {
 		commentText="";
 		sentAt=LocalDateTime.now();
 	}
+	
+	public Comment(int commentId, Reimbursement request, Employee approver, String commentText, LocalDateTime sentAt) {
+		this.commentId = commentId;
+		this.request = request;
+		this.approver = approver;
+		this.commentText = commentText;
+		this.sentAt = sentAt;
+	}
 
 	public int getCommentId() {
 		return commentId;

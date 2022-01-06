@@ -13,6 +13,12 @@ public class GradingFormat {
 		example=null;
 	}
 
+	public GradingFormat(int formatId, String name, String example) {
+		this.formatId = formatId;
+		this.name = name;
+		this.example = example;
+	}
+	
 	public int getFormatId() {
 		return formatId;
 	}

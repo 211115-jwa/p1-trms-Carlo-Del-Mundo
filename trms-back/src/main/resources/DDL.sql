@@ -74,3 +74,6 @@ create table comment (
 	comment_text varchar(500),
 	sent_at timestamptz
 );
+
+alter table reimbursement rename column local_date to event_date;
+alter table reimbursement rename column local_time to event_time;

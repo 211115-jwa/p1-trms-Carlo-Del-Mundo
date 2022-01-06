@@ -31,6 +31,20 @@ public class Reimbursement {
 		status = new Status();
 		submittedAt = LocalDateTime.now();
 	}
+	
+	public Reimbursement(int reqId, Employee requestor, LocalDate eventDate, LocalTime eventTime, String location, String description, double cost, GradingFormat gradingFormat, EventType eventType, Status status, LocalDateTime submittedAt) {
+		this.reqId = reqId;
+		this.requestor = requestor;
+		this.eventDate = eventDate;
+		this.eventTime = eventTime;
+		this.location = location;
+		this.description = description;
+		this.cost = cost;
+		this.gradingFormat = gradingFormat;
+		this.eventType =  eventType;
+		this.status = status;
+		this.submittedAt = submittedAt;
+	}
 
 	public int getReqId() {
 		return reqId;
