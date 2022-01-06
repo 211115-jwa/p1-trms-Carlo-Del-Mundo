@@ -21,18 +21,8 @@ public class RequestReviewServiceImpl implements RequestReviewService {
 	@Override
 	public Set<Reimbursement> getPendingReimbursements(Employee approver) {
 		// TODO Auto-generated method stub
-		Status stat = statusDao.getById(1);
-		Set<Reimbursement> requests = reimbursementDao.getByStatus(stat);
-		
-//		Set<Reimbursement> approverRequests = new HashSet<>();
-//		requests.forEach(request -> {
-//			if(request.getRequestor().getSupervisor().getEmpId() == approver.getEmpId()) {
-//				approverRequests.add(request);
-//			}
-//		});
-//		
-//		return approverRequests;
-		return requests;
+
+		return reimbursementDao.getPendingByApprover(approver);
 	}
 
 	@Override

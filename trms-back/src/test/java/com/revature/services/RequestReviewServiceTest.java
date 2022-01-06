@@ -60,10 +60,8 @@ public class RequestReviewServiceTest {
 	@Test
 	public void getPendingReimbursementsTest() {
 		Employee mockEmployee = new Employee();
-		Status mockStatus = new Status();
-		
-		when(statusDao.getById(1)).thenReturn(mockStatus);
-		when(reimbursementDao.getByStatus(mockStatus)).thenReturn(mockRequests);
+
+		when(reimbursementDao.getPendingByApprover(mockEmployee)).thenReturn(mockRequests);
 		Set<Reimbursement> actual = revServ.getPendingReimbursements(mockEmployee);
 		
 		assertEquals(mockRequests, actual);

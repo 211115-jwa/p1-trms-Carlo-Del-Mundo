@@ -431,4 +431,24 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 		return requests;
 	}
 
+	@Override
+	public Set<Reimbursement> getPendingByApprover(Employee approver) {
+		// TODO Auto-generated method stub
+		StatusDAO statusDao = DAOFactory.getStatusDAO();
+		Status stat = statusDao.getById(1);
+		Set<Reimbursement> pendingRequests = this.getByStatus(stat);
+		
+		Set<Reimbursement> approverRequests = new HashSet<>();
+		pendingRequests.forEach(request -> {
+			if(approver.getEmpId() == request.getRequestor().getSupervisor().getEmpId()) {
+				approverRequests.add(request);
+			}
+		});
+		
+		
+		return pendingRequests;
+	}
+	
+	
+
 }
