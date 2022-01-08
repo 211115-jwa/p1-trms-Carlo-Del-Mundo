@@ -6,24 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link href="./trms.css" rel="stylesheet">
 
-    <title>TRMS Project-1</title>
+    <title>TRMS - Home</title>
 </head>
 <body>
     <div class="container">
-        <div class="jumbotron">
-            <div class="container">
-            <h3 class="display-3">User name</h3>
-                <p>Other</p>
-                <p>info</p>
-                <p>here</p>
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div id="header" class="container">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="display-3">
+                            <label id="fullName">Firstname Lastname</label>
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-outline">
+                            <label id="role" class="form-control form-control-lg">Role</label>
+                        </div>
+                        <div class="form-outline">
+                            <label id="supervisor" class="form-control form-control-lg">Supervisor</label>
+                        </div>
+                        <div class="form-outline">
+                            <label id="department" class="form-control form-control-lg">Department</label>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <div class="d-flex flex-row-reverse bd-highlight">
+                    <a class="btn btn-primary" href="#" role="button">Create New Request »</a>
+                </div>
+            </div>
+            <div class="col d-flex flex-column-reverse p-2 bd-highlight">
+                <a id="btnLogin" class="btn btn-primary pull-right" data-bs-target="#loginModal" data-bs-toggle="modal" href="#" role="button">Login</a>
             </div>
         </div>
         <div class="container request-table">
             <h4>Reimbursement Requests</h4>
-            <table id="requests" class="table table-striped table-hover table-bordered">
+            <table id="requestsTable" class="table table-striped table-hover table-bordered shadow-5">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Event Date</th>
@@ -39,5 +63,33 @@
             </table>
         </div>
     </div>
+    <div class="modal" id="loginModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Login</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="">
+                  <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" placeholder="Username" id="username">
+                  </div>
+                  <div class="form-group">
+                      <label for="password">Password</label>
+                      <input type="password" class="form-control" placeholder="User password" id="password">
+                  </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Login</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="./js/home.js"></script>
 </body>
 </html>

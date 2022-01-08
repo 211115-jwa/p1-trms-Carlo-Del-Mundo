@@ -6,6 +6,7 @@ import io.javalin.http.HttpCode;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 import com.revature.controllers.RequestsController;
+import com.revature.controllers.UsersController;
 
 public class TRMSApp {
 
@@ -33,7 +34,14 @@ public class TRMSApp {
 					get(RequestsController::getRequestsByRequestor);
 				});
 			});
+			
+			path("/users", () -> {
+				path("/auth", () -> {
+					post(UsersController::logIn);
+				});
+			});
 		});
+		
 	}
 
 }

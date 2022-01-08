@@ -50,9 +50,9 @@ public class RequestReviewServiceTest {
 		
 		for(int i=0;i<5;i++) {
 			Reimbursement mockRequest = new Reimbursement(i, new Employee(), 
-										LocalDate.now(),LocalTime.now(),
+										LocalDate.now().toString(),LocalTime.now().toString(),
 										"test"+i,"test"+i, i*.65, new GradingFormat(), 
-										new EventType(), new Status(), LocalDateTime.now());
+										new EventType(), new Status(), LocalDateTime.now().toString());
 			mockRequests.add(mockRequest);
 		}
 	}

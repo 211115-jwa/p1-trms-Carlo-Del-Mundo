@@ -8,15 +8,15 @@ import java.util.Objects;
 public class Reimbursement {
 	private int reqId;
 	private Employee requestor;
-	private LocalDate eventDate;
-	private LocalTime eventTime;
+	private String eventDate;
+	private String eventTime;
 	private String location;
 	private String description;
 	private double cost;
 	private GradingFormat gradingFormat;
 	private EventType eventType;
 	private Status status;
-	private LocalDateTime submittedAt;
+	private String submittedAt;
 	
 	public Reimbursement() {
 		reqId=0;
@@ -29,10 +29,10 @@ public class Reimbursement {
 		gradingFormat = new GradingFormat();
 		eventType =  new EventType();
 		status = new Status();
-		submittedAt = LocalDateTime.now();
+		submittedAt = LocalDateTime.now().toString();
 	}
 	
-	public Reimbursement(int reqId, Employee requestor, LocalDate eventDate, LocalTime eventTime, String location, String description, double cost, GradingFormat gradingFormat, EventType eventType, Status status, LocalDateTime submittedAt) {
+	public Reimbursement(int reqId, Employee requestor, String eventDate, String eventTime, String location, String description, double cost, GradingFormat gradingFormat, EventType eventType, Status status, String submittedAt) {
 		this.reqId = reqId;
 		this.requestor = requestor;
 		this.eventDate = eventDate;
@@ -62,19 +62,19 @@ public class Reimbursement {
 		this.requestor = requestor;
 	}
 
-	public LocalDate getEventDate() {
+	public String getEventDate() {
 		return eventDate;
 	}
 
-	public void setEventDate(LocalDate eventDate) {
+	public void setEventDate(String eventDate) {
 		this.eventDate = eventDate;
 	}
 
-	public LocalTime getEventTime() {
+	public String getEventTime() {
 		return eventTime;
 	}
 
-	public void setEventTime(LocalTime eventTime) {
+	public void setEventTime(String eventTime) {
 		this.eventTime = eventTime;
 	}
 
@@ -126,11 +126,11 @@ public class Reimbursement {
 		this.status = status;
 	}
 
-	public LocalDateTime getSubmittedAt() {
+	public String getSubmittedAt() {
 		return submittedAt;
 	}
 
-	public void setSubmittedAt(LocalDateTime submittedAt) {
+	public void setSubmittedAt(String submittedAt) {
 		this.submittedAt = submittedAt;
 	}
 
