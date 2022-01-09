@@ -28,7 +28,13 @@ public class RequestReviewServiceImpl implements RequestReviewService {
 	@Override
 	public boolean approveRequest(Reimbursement request) {
 		// TODO Auto-generated method stub
-		Status stat = statusDao.getById(2);
+		int id = 0;
+		if(request.getStatus().getStatusId() < 4) {
+			id = request.getStatus().getStatusId() + 1;
+		} else {
+			id = request.getStatus().getStatusId();
+		}
+		Status stat = statusDao.getById(id);
 		request.setStatus(stat);
 		return reimbursementDao.update(request);
 	}
@@ -36,7 +42,8 @@ public class RequestReviewServiceImpl implements RequestReviewService {
 	@Override
 	public boolean rejectRequest(Reimbursement request) {
 		// TODO Auto-generated method stub
-		Status stat = statusDao.getById(3);
+		
+		Status stat = statusDao.getById(0);
 		request.setStatus(stat);
 		return reimbursementDao.update(request);
 	}
@@ -57,6 +64,12 @@ public class RequestReviewServiceImpl implements RequestReviewService {
 		}
 		
 		return reqUpdated;
+	}
+
+	@Override
+	public Reimbursement getRequestByID(int id) {
+		// TODO Auto-generated method stub
+		return reimbursementDao.getById(id);
 	}
 
 }

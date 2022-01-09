@@ -1,13 +1,13 @@
 insert into user_role (role_id, role_name) 
 	values (default, 'Employee'),
 			(default, 'Direct Supervisor'),
-	 		(default, 'Manager');
+	 		(default, 'Department Head');
 	 		
 insert into status (status_id, status_name, approver)
-	values (default, 'Pending Approval', 'Direct Supervisor'),
-			(default, 'Approved', 'Manager'),
-			(default, 'Rejected', 'Manager'),
-			(default, 'Requesting', 'Employee');
+	values (default, 'Requesting', 'Employee'),
+			(default, 'Pending Approval', 'Direct Supervisor'),
+			(default, 'Pending Approval', 'Department Head'),
+			(default, 'Approved', 'Benco');
 			
 insert into grading_format (format_id, format_name, example)
 	values (default,'Letter Grade','A/B/C'),
@@ -60,3 +60,8 @@ insert into reimbursement (req_id, emp_id, local_date, local_time, "location", d
 insert into "comment" (comment_id, req_id, approver_id, comment_text, sent_at)
 	values (default, 1, 2, 'test comment', current_timestamp);
 	
+insert into user_role (role_id, role_name) 
+	values (default, 'Benco');
+
+insert into status (status_id, status_name, approver)
+	values (0, 'Rejected', 'Benco');

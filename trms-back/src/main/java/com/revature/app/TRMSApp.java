@@ -23,6 +23,7 @@ public class TRMSApp {
 //				ctx.header("Access-Control-Expose-Headers", "Token");
 //				
 //				String token = ctx.header("header");
+//				System.out.println(token);
 //				if(token == null) ctx.status(HttpCode.UNAUTHORIZED);
 //			}
 //		});
@@ -33,12 +34,29 @@ public class TRMSApp {
 				path("/requestor/{id}", () -> {
 					get(RequestsController::getRequestsByRequestor);
 				});
+				path("/approver/{id}", () -> {
+					get(RequestsController::getRequestsByApprover);
+					path("/approve", () -> {
+						post(RequestsController::approveRequest);
+					});
+					path("/reject", () -> {
+						post(RequestsController::rejectRequest);
+					});
+				});
 			});
 			
 			path("/users", () -> {
 				path("/auth", () -> {
 					post(UsersController::logIn);
 				});
+				path("/{id}", () -> {
+					get(UsersController::getUserById);
+					
+					path("/auth", () -> {
+						get(UsersController::checkLogin);
+					});
+				});
+				
 			});
 		});
 		

@@ -57,4 +57,6 @@ public interface RequestReviewService {
 	 * @param request the request to be rejected
 	 */
 	public boolean rejectRequest(Reimbursement request, Comment comment);
+	
+	public Reimbursement getRequestByID(int id);
 }

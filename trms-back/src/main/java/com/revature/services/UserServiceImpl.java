@@ -47,4 +47,10 @@ public class UserServiceImpl implements UserService{
 		return empDao.delete(userToDelete);
 	}
 
+	@Override
+	public Employee getUserById(int Id) {
+		// TODO Auto-generated method stub
+		return empDao.getById(Id);
+	}
+
 }

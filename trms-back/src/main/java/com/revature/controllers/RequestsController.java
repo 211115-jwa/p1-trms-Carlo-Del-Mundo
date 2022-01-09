@@ -1,15 +1,23 @@
 package com.revature.controllers;
 
+import java.util.Map;
+
+import com.revature.beans.Comment;
 import com.revature.beans.Employee;
 import com.revature.beans.Reimbursement;
+import com.revature.data.ReimbursementDAO;
 import com.revature.services.EmployeeService;
 import com.revature.services.EmployeeServiceImpl;
+import com.revature.services.RequestReviewService;
+import com.revature.services.RequestReviewServiceImpl;
+import com.revature.utils.DAOFactory;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpCode;
 
 public class RequestsController {
 	private static EmployeeService empServ = new EmployeeServiceImpl();
+	private static RequestReviewService reqServ = new RequestReviewServiceImpl();
 	
 	/**
 	 * Retrieves the submitted reimbursement request from the
@@ -62,11 +70,15 @@ public class RequestsController {
 		String requestorIdStr = ctx.pathParam("id");
 		
 		try {
-			int requestorId = Integer.valueOf(requestorIdStr);
+			int requestorId = Integer.parseInt(requestorIdStr);
 			Employee requestor = empServ.getEmployeeById(requestorId);
 			
 			if (requestor != null) {
-				ctx.json(empServ.getReimbursementRequests(requestor));
+				if (requestor.getRole().getRoleId() == 2 || requestor.getRole().getRoleId() == 3) {
+					ctx.json(reqServ.getPendingReimbursements(requestor));
+				} else {
+					ctx.json(empServ.getReimbursementRequests(requestor));
+				}
 			} else {
 				ctx.status(404);
 				ctx.result("The user you specified does not exist.");
@@ -76,4 +88,62 @@ public class RequestsController {
 			ctx.result("Requestor ID must be an integer. Please try again.");
 		}
 	}
+	
+	public static void getRequestsByApprover(Context ctx) {
+		String approverId = ctx.pathParam("id");
+		
+		try {
+			int id = Integer.parseInt(approverId);
+			Employee approver = empServ.getEmployeeById(id);
+			
+			if(approver != null) {
+				ctx.json(reqServ.getPendingReimbursements(approver));
+			} else {
+				ctx.status(404);
+				ctx.result("No pending requests");
+			}
+		} catch (NumberFormatException e) {
+			ctx.status(400);
+			ctx.result("Requestor ID must be an integer. Please try again.");
+		}
+	}
+	
+	public static void approveRequest(Context ctx) {
+		Map<String,String> approve = ctx.bodyAsClass(Map.class);
+		String requestId = approve.get("requestId");
+		try {
+			int id = Integer.parseInt(requestId);
+			Reimbursement request  = reqServ.getRequestByID(id);
+			boolean approved = reqServ.approveRequest(request);
+			
+			if(approved) {
+				ctx.status(HttpCode.ACCEPTED);
+				ctx.json(approved);
+			}
+		} catch (NumberFormatException e) {
+			ctx.status(400);
+			ctx.result("Request ID must be an integer.");
+		}
+	}
+	
+	public static void rejectRequest(Context ctx) {
+		Map<String,String> approve = ctx.bodyAsClass(Map.class);
+		String requestId = approve.get("requestId");
+		String comment = approve.get("comment");
+		
+		try {
+			int id = Integer.parseInt(requestId);
+			Reimbursement request = reqServ.getRequestByID(id);
+			boolean approved = reqServ.rejectRequest(request, new Comment(comment));
+			if(approved) {
+				ctx.status(HttpCode.ACCEPTED);
+				ctx.json(approved);
+			}
+			
+		} catch (NumberFormatException e) {
+			ctx.status(400);
+			ctx.result("Request ID must be an integer.");
+		}
+	}
+	
 }
