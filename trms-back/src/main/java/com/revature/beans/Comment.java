@@ -18,14 +18,6 @@ public class Comment {
 		sentAt=LocalDateTime.now();
 	}
 	
-	public Comment(String comment) {
-		commentId = 0;
-		request=null;
-		approver=null;
-		commentText=comment;
-		sentAt=LocalDateTime.now();
-	}
-	
 	public Comment(int commentId, Reimbursement request, Employee approver, String commentText, LocalDateTime sentAt) {
 		this.commentId = commentId;
 		this.request = request;

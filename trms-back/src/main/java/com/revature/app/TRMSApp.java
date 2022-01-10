@@ -2,32 +2,27 @@ package com.revature.app;
 
 import io.javalin.Javalin;
 import io.javalin.http.HttpCode;
+import io.javalin.plugin.json.JsonMapper;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.controllers.RequestsController;
 import com.revature.controllers.UsersController;
 
 public class TRMSApp {
 
 	public static void main(String[] args) {
+		
 		Javalin app = Javalin.create(config -> {
 			config.enableCorsForAllOrigins();
 		});
 		
 		app.start();
-		
-//		app.before("/requests/*", ctx -> {
-//			if(!ctx.method().equals("OPTIONS")) {
-//				ctx.header("Access-Control-Allow-Headers", "Token");
-//				ctx.header("Access-Control-Expose-Headers", "Token");
-//				
-//				String token = ctx.header("header");
-//				System.out.println(token);
-//				if(token == null) ctx.status(HttpCode.UNAUTHORIZED);
-//			}
-//		});
-		
+				
 		app.routes(() -> {
 			path("/requests", () -> {
 				post(RequestsController::submitReimbursementRequest);
@@ -36,12 +31,15 @@ public class TRMSApp {
 				});
 				path("/approver/{id}", () -> {
 					get(RequestsController::getRequestsByApprover);
-					path("/approve", () -> {
-						post(RequestsController::approveRequest);
-					});
-					path("/reject", () -> {
-						post(RequestsController::rejectRequest);
-					});
+				});
+				path("/approve", () -> {
+					post(RequestsController::approveRequest);
+				});
+				path("/reject", () -> {
+					post(RequestsController::rejectRequest);
+				});
+				path("/options", () -> {
+					get(RequestsController::getOptions);
 				});
 			});
 			
@@ -63,3 +61,4 @@ public class TRMSApp {
 	}
 
 }
+

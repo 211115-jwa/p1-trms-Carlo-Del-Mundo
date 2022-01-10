@@ -4,6 +4,8 @@ import java.util.Set;
 
 import com.revature.beans.Comment;
 import com.revature.beans.Employee;
+import com.revature.beans.EventType;
+import com.revature.beans.GradingFormat;
 import com.revature.beans.Reimbursement;
 
 public interface RequestReviewService {
@@ -59,4 +61,7 @@ public interface RequestReviewService {
 	public boolean rejectRequest(Reimbursement request, Comment comment);
 	
 	public Reimbursement getRequestByID(int id);
+	public GradingFormat getGradingFormatByID(int id);
+	public EventType getEventTypeByID(int id);
+	public Set<Reimbursement> getAllRequests();
 }

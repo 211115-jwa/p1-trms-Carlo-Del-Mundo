@@ -74,7 +74,7 @@ public class EmployeeServiceTest {
 			EventType mockEventType = new EventType(i, "test"+i, i);
 			GradingFormat mockGF = new GradingFormat(i, "test"+i, "test"+i);
 			Reimbursement mockRequest = new Reimbursement(i, new Employee(),LocalDate.now().toString(),LocalTime.now().toString(),
-					"test"+i,"test"+i, i*.65, mockGF, mockEventType, new Status(), LocalDateTime.now().toString());
+					"test"+i,"test"+i, i*.65, mockGF, mockEventType, new Status(), LocalDateTime.now());
 			Comment mockComment = new Comment(i, mockRequest, new Employee(), "text"+i, LocalDateTime.now());
 			
 			mockEventTypes.add(mockEventType);

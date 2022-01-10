@@ -35,7 +35,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 		int generatedId=0;
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
-			String[] keys = {"req_Id"};
+			String[] keys = {"req_id"};
 			String sql="insert into reimbursement"
 					+ " (emp_id,"
 					+ " event_date,"
@@ -116,8 +116,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setReqId(resultSet.getInt("req_id"));
 				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
 //				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
-				request.setEventDate(resultSet.getDate("event_date").toLocalDate().toString());
-				request.setEventTime(resultSet.getTime("event_time").toLocalTime().toString());
+				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
+				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
@@ -139,7 +139,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 //				s.setName(resultSet.getString("status_name"));
 //				s.setApprover(resultSet.getString("approver"));
 //				request.setStatus(s);
-				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime().toString());
+				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -186,8 +186,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setReqId(resultSet.getInt("req_id"));
 				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
 //				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
-				request.setEventDate(resultSet.getDate("event_date").toLocalDate().toString());
-				request.setEventTime(resultSet.getTime("event_time").toLocalTime().toString());
+				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
+				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
@@ -206,7 +206,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 //				s.setName(resultSet.getString("status_name"));
 //				s.setApprover(resultSet.getString("approver"));
 				request.setStatus(statusDao.getById(resultSet.getInt("status_id")));
-				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime().toString());
+				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);
 			}
@@ -327,8 +327,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setReqId(resultSet.getInt("req_id"));
 				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
 //				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
-				request.setEventDate(resultSet.getDate("event_date").toLocalDate().toString());
-				request.setEventTime(resultSet.getTime("event_time").toLocalTime().toString());
+				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
+				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
@@ -350,7 +350,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 //				s.setName(resultSet.getString("status_name"));
 //				s.setApprover(resultSet.getString("approver"));
 //				request.setStatus(s);
-				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime().toString());
+				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);
 			}
@@ -402,8 +402,8 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 				request.setReqId(resultSet.getInt("req_id"));
 				request.setRequestor(empDao.getById(resultSet.getInt("emp_id")));
 //				request.getRequestor().setEmpId(resultSet.getInt("emp_id"));
-				request.setEventDate(resultSet.getDate("event_date").toLocalDate().toString());
-				request.setEventTime(resultSet.getTime("event_time").toLocalTime().toString());
+				request.setEventDate(resultSet.getDate("event_date").toLocalDate());
+				request.setEventTime(resultSet.getTime("event_time").toLocalTime());
 				request.setLocation(resultSet.getString("location"));
 				request.setDescription(resultSet.getString("description"));
 				request.setCost(resultSet.getDouble("cost"));
@@ -425,7 +425,7 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 //				s.setName(resultSet.getString("status_name"));
 //				s.setApprover(resultSet.getString("approver"));
 //				request.setStatus(s);
-				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime().toString());
+				request.setSubmittedAt(resultSet.getTimestamp("submitted_at").toLocalDateTime());
 				
 				requests.add(request);
 			}
@@ -446,7 +446,6 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 		Set<Reimbursement> pendingDeptHeadRequests = this.getByStatus(pendingDeptHead);
 		Set<Reimbursement> approverRequests = new HashSet<>();
 		
-		
 		pendingSupervisorRequests.forEach(request -> {
 			if(approver.getEmpId() == request.getRequestor().getSupervisor().getEmpId()) {
 				approverRequests.add(request);
@@ -456,16 +455,11 @@ public class ReimbursementPostgres implements ReimbursementDAO {
 		});
 		
 		pendingDeptHeadRequests.forEach(request -> {
-			if(approver.getEmpId() == request.getRequestor().getSupervisor().getEmpId()) {
-				approverRequests.add(request);
-				System.out.println(approver.getEmpId());
-				System.out.println(request.getRequestor().getSupervisor().getEmpId());
-			}
+			approverRequests.add(request);
+			System.out.println(approver.getEmpId());
+			System.out.println(request.getRequestor().getSupervisor().getSupervisor().getEmpId());
 		});
 		
 		return approverRequests;
 	}
-	
-	
-
 }

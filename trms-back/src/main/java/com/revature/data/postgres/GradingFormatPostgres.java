@@ -52,6 +52,8 @@ public class GradingFormatPostgres implements GradingFormatDAO {
 				format.setFormatId(resultSet.getInt("format_id"));
 				format.setName(resultSet.getString("format_name"));
 				format.setExample(resultSet.getString("example"));
+				
+				formats.add(format);
 			}
 		
 		} catch (SQLException e) {

@@ -35,9 +35,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public int submitReimbursementRequest(Reimbursement request) {
-		Status initialStatus = statusDao.getById(1);
+		Status initialStatus = statusDao.getById(2);
 		request.setStatus(initialStatus);
-		request.setSubmittedAt(LocalDateTime.now().toString());
+		request.setSubmittedAt(LocalDateTime.now());
 		return reqDao.create(request);
 	}
 

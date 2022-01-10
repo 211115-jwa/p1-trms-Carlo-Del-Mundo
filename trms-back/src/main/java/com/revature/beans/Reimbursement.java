@@ -3,6 +3,7 @@ package com.revature.beans;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Reimbursement {
@@ -16,7 +17,7 @@ public class Reimbursement {
 	private GradingFormat gradingFormat;
 	private EventType eventType;
 	private Status status;
-	private String submittedAt;
+	private LocalDateTime submittedAt;
 	
 	public Reimbursement() {
 		reqId=0;
@@ -29,10 +30,10 @@ public class Reimbursement {
 		gradingFormat = new GradingFormat();
 		eventType =  new EventType();
 		status = new Status();
-		submittedAt = LocalDateTime.now().toString();
+		submittedAt = null;
 	}
 	
-	public Reimbursement(int reqId, Employee requestor, String eventDate, String eventTime, String location, String description, double cost, GradingFormat gradingFormat, EventType eventType, Status status, String submittedAt) {
+	public Reimbursement(int reqId, Employee requestor, String eventDate, String eventTime, String location, String description, double cost, GradingFormat gradingFormat, EventType eventType, Status status, LocalDateTime submittedAt) {
 		this.reqId = reqId;
 		this.requestor = requestor;
 		this.eventDate = eventDate;
@@ -63,19 +64,25 @@ public class Reimbursement {
 	}
 
 	public String getEventDate() {
-		return eventDate;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate eDAte = LocalDate.parse(this.eventDate,formatter);
+
+		return eDAte.toString();
 	}
 
-	public void setEventDate(String eventDate) {
-		this.eventDate = eventDate;
+	public void setEventDate(LocalDate eventDate) {
+		this.eventDate = String.valueOf(eventDate);
 	}
 
 	public String getEventTime() {
-		return eventTime;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime eventTime = LocalTime.parse(this.eventTime,formatter);
+		
+		return eventTime.toString();
 	}
 
-	public void setEventTime(String eventTime) {
-		this.eventTime = eventTime;
+	public void setEventTime(LocalTime eventTime) {
+		this.eventTime = String.valueOf(eventTime);
 	}
 
 	public String getLocation() {
@@ -126,11 +133,11 @@ public class Reimbursement {
 		this.status = status;
 	}
 
-	public String getSubmittedAt() {
+	public LocalDateTime getSubmittedAt() {
 		return submittedAt;
 	}
 
-	public void setSubmittedAt(String submittedAt) {
+	public void setSubmittedAt(LocalDateTime submittedAt) {
 		this.submittedAt = submittedAt;
 	}
 

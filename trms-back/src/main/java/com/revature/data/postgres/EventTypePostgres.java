@@ -47,7 +47,7 @@ public class EventTypePostgres implements EventTypeDAO {
 			
 			ResultSet resultSet = stmt.executeQuery(sql);
 			
-			if (resultSet.next()) {
+			while(resultSet.next()) {
 				EventType eventType = new EventType();
 				eventType.setEventId(resultSet.getInt("type_id"));
 				eventType.setName(resultSet.getString("type_name"));

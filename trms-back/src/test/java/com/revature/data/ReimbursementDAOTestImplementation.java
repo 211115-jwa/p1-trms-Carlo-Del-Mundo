@@ -47,7 +47,7 @@ public class ReimbursementDAOTestImplementation implements ReimbursementDAOTest 
 //		fail("Not Implemented yet");
 		Reimbursement actual = this.requestDao.getById(1);
 		LocalDate today = LocalDate.now();
-		actual.setEventDate(today.toString());
+		actual.setEventDate(today);
 		boolean isUpdated = this.requestDao.update(actual);
 		assertTrue(isUpdated);
 	}

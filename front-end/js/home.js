@@ -9,24 +9,27 @@ function init() {
     let info = document.getElementById('info');
     
     if(loggedInUser){
+        if(loggedInUser['role']['roleId'] > 1) {
+            document.getElementById('btnRequest').style.display = 'none';
+        }
         console.log(loggedInUser);
         info.style.display = 'block'
-        loadTable(loggedInUser['empId']).then(loadUserInfo());
+        loadOptions()
+            .then(loadTable(loggedInUser['empId']))
+            .then(loadUserInfo());
     } else {
         info.style.display = 'none';
     }
     
     document.getElementById('btnLogin').addEventListener('click',logIn);
     document.getElementById('btnLogOut').addEventListener('click',logOut);
+    document.getElementById('btnSubmit').addEventListener('click',submitRequest);
+    document.getElementById('btnApprove').addEventListener('click',approve);
+    document.getElementById('btnReject').addEventListener('click',reject);
 }
 
 async function checkLogin() {
     
-    if(loggedInUser) {
-        document.getElementById('info').style.display = 'block';
-        document.getElementById('loginButton').style.display = 'none';
-    } 
-
     let userId = localStorage.getItem('Token');
     console.log('check login - ' + userId);
     if(userId) {
@@ -36,6 +39,66 @@ async function checkLogin() {
             init();
         }
     }
+}
+
+async function submitRequest() {
+    let request = {
+        'userId':loggedInUser.empId,
+        'eventDate':document.getElementById('txtEventDate').value,
+        'eventTime':document.getElementById('txtEventTime').value + ':59',
+        'location':document.getElementById('txtLocation').value,
+        'cost':document.getElementById('txtCost').value,
+        'gradingFormat':document.getElementById('drpGrade').value,
+        'eventType':document.getElementById('drpEvent').value,
+        'description':document.getElementById('txtDescription').value
+    }
+
+    let response = await fetch(url + 'requests/', {method:'POST',body:JSON.stringify(request)});
+    if(response.status === 200) {
+        checkLogin().then(init());
+        console.log(response);
+    } else if(response.status === 404) {
+        let msg = await response.text();
+        alert(msg);
+    }
+    location.reload()
+}
+
+async function approve() {
+    let id = document.getElementById('hdnRequestID').value;
+    let request = {
+        'requestId':id,
+    }
+
+    let response = await fetch(url + 'requests/approve', {method:'POST',body:JSON.stringify(request)});
+    if(response.status === 200) {
+        checkLogin().then(init());
+        console.log(response);
+    } else if(response.status === 404) {
+        let msg = await response.text();
+        alert(msg);
+    }
+    location.reload()
+}
+
+async function reject() {
+    let requestId = document.getElementById('hdnRequestID').value;
+    let comment = document.getElementById('txtComment').value;
+    let request = {
+        'id':loggedInUser['empId'],
+        'requestId':requestId,
+        'comment':comment
+    }
+
+    let response = await fetch(url + 'requests/reject', {method:'POST',body:JSON.stringify(request)});
+    if(response.status === 200) {
+        checkLogin().then(init());
+        console.log(response);
+    } else if(response.status === 404) {
+        let msg = await response.text();
+        alert(msg);
+    }
+    location.reload()
 }
 
 async function logIn() {
@@ -79,8 +142,8 @@ async function loadTable(id){
     if (response.status === 200) {
         requests = await response.json();
     }
-    // console.log('loadTable');
-    // console.log(loggedInUser['role']['roleId']);
+    console.log('loadTable');
+    console.log(loggedInUser['role']['roleId']);
 
     const reqTable = document.getElementById('requestsTable');
     console.log(reqTable);
@@ -143,13 +206,13 @@ async function loadTable(id){
         
         const submittedAt = document.createElement('td');
         submittedAt.scope = 'col';
-        submittedAt.innerText = request['submittedAt'];
+        submittedAt.innerText = request['submittedAt']['year'] + request['submittedAt']['month'] + request['submittedAt']['dayOfMonth'];
         row.appendChild(submittedAt);
         
         if(roleId == 2 || roleId == 3) {
             const tdSelect = document.createElement('td');
             tdSelect.scope = 'col';
-            const btnSelect = document.createElement('BUTTON');
+            const btnSelect = document.createElement('button');
             btnSelect.id = String(request['reqId']);
             // data-bs-target="#approvalModal"
             // data-bs-toggle="modal"
@@ -158,7 +221,9 @@ async function loadTable(id){
             btnSelect.className = "btn btn-outline-primary btn-sm";
             btnSelect.innerText = 'Select';
             btnSelect.onclick = item => {
-                console.log(item);
+                let button = item['path'][0];
+                document.getElementById('hdnRequestID').value = button.id;
+                // console.log(document.getElementById('hdnRequestID').value);
             };
             tdSelect.appendChild(btnSelect);
             row.appendChild(tdSelect);
@@ -167,6 +232,40 @@ async function loadTable(id){
         reqTable.appendChild(row);
     }
 
+}
+
+async function loadOptions() {
+    let options;
+    let url='http://localhost:8080/requests/options';
+
+    let response = await fetch(url);
+    if (response.status === 200) {
+        options = await response.json();
+    }
+
+    console.log(options);
+    
+    if(options) {
+        let formats = options['gradingFormats'];
+        let events = options['eventTypes'];
+
+        const drpGrade = document.getElementById('drpGrade');
+        const drpEvent = document.getElementById('drpEvent');
+
+        for(format of formats) {
+            const option = document.createElement('option');
+            option.value = format['formatId'];
+            option.text = format['name'];
+            drpGrade.add(option);
+        }
+
+        for(type of events) {
+            const option = document.createElement('option');
+            option.value = type['eventId'];
+            option.text = type['percentCovered'] + '% - ' + type['name'];
+            drpEvent.add(option);
+        }
+    }
 }
 
 function loadUserInfo(){
@@ -178,9 +277,10 @@ function loadUserInfo(){
     lblFullName.innerText = loggedInUser['firstName'] + ' ' + loggedInUser['lastName'];
     lblRole.innerText = 'Role: ' + loggedInUser['role']['name'];
     if(loggedInUser['supervisor']) {
-        lblSupervisor.innerText = 'Supervisor: ' + loggedInUser['supervisor']['firstName'] + ' ' + loggedInUser['supervisor']['lastName'];
+        lblSupervisor.innerText = 'Senior: ' + loggedInUser['supervisor']['firstName'] + ' ' + loggedInUser['supervisor']['lastName'];
     } else {
         lblSupervisor.innerText = 'N/A'
     }
     lblDepartment.innerText = 'Department: ' + loggedInUser['department']['name'];
 }
+

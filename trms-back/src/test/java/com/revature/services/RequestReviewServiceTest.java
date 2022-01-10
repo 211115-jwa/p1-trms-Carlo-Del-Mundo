@@ -52,7 +52,7 @@ public class RequestReviewServiceTest {
 			Reimbursement mockRequest = new Reimbursement(i, new Employee(), 
 										LocalDate.now().toString(),LocalTime.now().toString(),
 										"test"+i,"test"+i, i*.65, new GradingFormat(), 
-										new EventType(), new Status(), LocalDateTime.now().toString());
+										new EventType(), new Status(), LocalDateTime.now());
 			mockRequests.add(mockRequest);
 		}
 	}
